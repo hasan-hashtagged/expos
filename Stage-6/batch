@@ -1,0 +1,4 @@
+load --init $HOME/myexpos/expl/expl_progs/init.xsm
+load --os $HOME/myexpos/spl/spl_progs/os_startup.xsm
+load --exhandler $HOME/myexpos/spl/spl_progs/int10.xsm
+load --int=10 $HOME/myexpos/spl/spl_progs/int10.xsm
