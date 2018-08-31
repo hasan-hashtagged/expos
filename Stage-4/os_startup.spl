@@ -1,0 +1,9 @@
+alias c R0;
+c=1;
+while(c<=20) do
+  if(c%2!=0) then
+    print c;
+  endif;
+  c=c+1;
+ endwhile;
+ halt;
