@@ -1,0 +1,7 @@
+load --os $HOME/myexpos/spl/spl_progs/os_startup.xsm
+load --int=10 $HOME/myexpos/spl/spl_progs/int10.xsm
+load --exhandler $HOME/myexpos/spl/spl_progs/int10.xsm
+load --library $HOME/myexpos/expl/library.lib
+load --init $HOME/myexpos/expl/expl_progs/init.xsm
+load --int=timer $HOME/myexpos/spl/spl_progs/timer.xsm
+load --int=7 $HOME/myexpos/spl/spl_progs/write.xsm
