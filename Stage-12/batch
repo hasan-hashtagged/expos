@@ -1,0 +1,8 @@
+load --os $HOME/myexpos/spl/spl_progs/os12.xsm
+load --int=timer $HOME/myexpos/spl/spl_progs/timer_12.xsm
+load --idle $HOME/myexpos/expl/expl_progs/idle.xsm
+load --init $HOME/myexpos/expl/expl_progs/odd.xsm
+load --int=10 $HOME/myexpos/spl/spl_progs/in10.xsm
+load --int=7 $HOME/myexpos/spl/spl_progs/write.xsm
+load --library $HOME/myexpos/expl/library.lib
+load --exhandler $HOME/myexpos/spl/spl_progs/int10.xsm
