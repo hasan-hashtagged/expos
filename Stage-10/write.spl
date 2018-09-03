@@ -1,0 +1,27 @@
+[PROCESS_TABLE+([SYSTEM_STATUS_TABLE+1]*16)+9]=5;
+alias userSP R0;
+userSP=SP;
+[PROCESS_TABLE+([SYSTEM_STATUS_TABLE+1]*16)+13]=SP;
+SP=[PROCESS_TABLE+([SYSTEM_STATUS_TABLE+1]*16)+11]*512-1;
+alias phpgno R1;
+alias offset R2;
+alias fdphpgad R3;
+phpgno=[PTBR+2*((userSP-4)/512)];
+offset=(userSP-4)%512;
+fdphpgad=(phpgno*512)+offset;
+alias fd R4;
+fd=[fdphpgad];
+if(fd!=-2)
+then
+	alias retvad R5;
+	retvad=([PTBR+2*((userSP-1)/512)]*512)+((userSP-1)%512);
+	[retvad]=-1;
+else
+	print [([PTBR+2*((userSP-3)/512)]*512)+((userSP-3)%512)];
+	alias retvad R5;
+	retvad=([PTBR+2*((userSP-1)/512)]*512)+((userSP-1)%512);
+	[retvad]=0;
+endif;
+SP=userSP;
+[PROCESS_TABLE+([SYSTEM_STATUS_TABLE+1]*16)+9]=0;
+ireturn;
