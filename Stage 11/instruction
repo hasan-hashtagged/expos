@@ -1,0 +1,2 @@
+  use same os_startup code,timer,in10,int7,exception handler,library as stage 10,stag 9
+  Compile the things accordingly to be uploaded
