@@ -1,0 +1,24 @@
+[PROCESS_TABLE+([SYSTEM_STATUS_TABLE+1]*16)+4]=TERMINATED;
+alias c R0;
+alias cpid R1;
+cpid=[SYSTEM_STATUS_TABLE+1];
+c=1;
+while(c<16) do
+	if(cpid<16) then
+		cpid=cpid+1;
+	else
+		cpid=1;
+	endif;
+	if([PROCESS_TABLE+(cpid*16)+4]==TERMINATED) then
+		c=c+1;
+		continue;
+	else
+		break;
+	endif;
+	c=c+1;
+endwhile;
+if(c==16) then
+	halt;
+else
+	call MOD_5;
+endif;
