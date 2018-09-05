@@ -13,7 +13,7 @@ while(i<16) do
 	endif;
 	i=i+1;
 endwhile;
-if(i==16) then
+if(i==16) then//bug
 	npid=0;
 endif;
 SP=([PROCESS_TABLE+npid*16+11]*512)+([PROCESS_TABLE+npid*16+12]);
