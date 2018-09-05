@@ -1,1 +1,10 @@
+load --exec $HOME/myexpos/expl/expl_progs/even.xsm
 load --module 5 $HOME/myexpos/spl/spl_progs/mod5.xsm
+load --os $HOME/myexpos/spl/spl_progs/os13.xsm
+load --module 7 $HOME/myexpos/spl/spl_progs/mod7.xsm
+load --int=7 $HOME/myexpos/spl/spl_progs/write.xsm
+load --exhandler $HOME/myexpos/spl/spl_progs/halt.xsm
+load --int=10 $HOME/myexpos/spl/spl_progs/int10.xsm
+load --idle $HOME/myexpos/expl/expl_progs/idle.xsm
+load --init $HOME/myexpos/expl/expl_progs/odd.xsm
+load --int=timer $HOME/myexpos/spl/spl_progs/timer14.xsm
