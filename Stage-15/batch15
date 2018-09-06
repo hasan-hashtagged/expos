@@ -1,0 +1,4 @@
+load --int=7 /home/hashtagged/myexpos/spl/spl_progs/int7.xsm
+load --module 4 /home/hashtagged/myexpos/spl/spl_progs/mod4.xsm
+load --module 0 /home/hashtagged/myexpos/spl/spl_progs/mod0.xsm
+load --module 7 /home/hashtagged/myexpos/spl/spl_progs/mod7_ass14.xsm
