@@ -1,0 +1,42 @@
+alias cpid R0;
+cpid=[SYSTEM_STATUS_TABLE+1];
+[PROCESS_TABLE+([SYSTEM_STATUS_TABLE+1]*16)+12]=SP%512;
+[PROCESS_TABLE+cpid*16+14]=PTBR;
+[PROCESS_TABLE+cpid*16+15]=PTLR;
+alias i R1;
+alias npid R2;
+i=cpid+1;
+while(i<16) do
+	if(([PROCESS_TABLE+i*16+4]==CREATED) || ([PROCESS_TABLE+i*16+4]==READY)) then
+		npid=i;
+		break;
+	endif;
+	i=i+1;
+endwhile;
+if(i==16) then
+	npid=0;
+endif;
+alias c2 R4;
+i=0;
+c2=0;
+while(i<16) do
+	if([PROCESS_TABLE+i*16+4]==TERMINATED) then
+		c2=c2+1;
+	endif;
+	i=i+1;
+endwhile;
+if(c2==15 && npid==0) then
+	halt;
+endif;
+SP=([PROCESS_TABLE+npid*16+11]*512)+([PROCESS_TABLE+npid*16+12]);
+PTBR=[PROCESS_TABLE+npid*16+14];
+PTLR=10;
+[SYSTEM_STATUS_TABLE+1]=npid;
+if([PROCESS_TABLE+npid*16+4]==CREATED) then
+	SP=[PROCESS_TABLE+npid*16+13];
+	[PROCESS_TABLE+npid*16+4]=RUNNING;
+	[PROCESS_TABLE+npid*16+9]=0;
+	ireturn;
+endif;
+[PROCESS_TABLE+npid*16+4]=RUNNING;
+return;
