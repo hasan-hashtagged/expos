@@ -1,0 +1,17 @@
+//DEVICE MANAGER TERMINAL WRITE
+alias funcnum R1;
+alias pid R2;
+if(funcnum==3) then
+	multipush(R1,R2,R3);//check R3
+	funcnum=8;
+	call MOD_0;
+	multipop(R1,R2,R3);
+	print R3;
+	multipush(R1,R2,R3);
+	funcnum=9;
+	call MOD_0;
+	multipop(R1,R2,R3);
+	return;
+else
+	return;
+endif;
