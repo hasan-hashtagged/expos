@@ -1,0 +1,30 @@
+alias funcnum R1;
+alias pid R2;
+alias i R4;
+if(funcnum==1) then
+	[SYSTEM_STATUS_TABLE+3]=[SYSTEM_STATUS_TABLE+3]+1;
+	while([SYSTEM_STATUS_TABLE+2]==0) do
+		[PROCESS_TABLE+pid*16+4]=WAIT_MEM;
+		multipush(R1,R2);
+		call MOD_5;
+		multipop(R1,R2);
+	endwhile;
+	[SYSTEM_STATUS_TABLE+3]=[SYSTEM_STATUS_TABLE+3]-1;
+	[SYSTEM_STATUS_TABLE+2]=[SYSTEM_STATUS_TABLE+2]-1;
+	i=76;
+	while(i<128) do
+		if([MEMORY_FREE_LIST+i]==0) then
+			[MEMORY_FREE_LIST+i]=1;
+			R0=i;
+			return;
+		endif;
+		i=i+1;
+	endwhile;
+endif;
+if(funcnum==2) then
+	[MEMORY_FREE_LIST+R2]=[MEMORY_FREE_LIST+R2]-1;
+	if([MEMORY_FREE_LIST+R2]==0) then
+		[SYSTEM_STATUS_TABLE+2]=[SYSTEM_STATUS_TABLE+2]+1;
+	endif;
+	return;
+endif;
