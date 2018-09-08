@@ -1,0 +1,35 @@
+//mode flag to 7
+[PROCESS_TABLE+([SYSTEM_STATUS_TABLE+1]*16)+9]=7;
+//user stack pointer
+alias userSP R0;
+userSP=SP;
+//kernel stack switch
+[PROCESS_TABLE+([SYSTEM_STATUS_TABLE+1]*16)+13]=SP;
+SP=[PROCESS_TABLE+([SYSTEM_STATUS_TABLE+1]*16)+11]*512-1;
+//finding file descriptor
+alias fd R1;
+fd=[([PTBR+2*((userSP-4)/512)]*512)+((userSP-4)%512)];
+//return address
+alias retv R2;
+retv=([PTBR+2*(userSP-1)/512]*512)+((userSP-1)%512);
+if(fd!=-1) then
+	[retv]=-1; //fail
+else
+	alias word R3;
+	word=[([PTBR+2*((userSP-3)/512)]*512)+((userSP-3)%512)];
+	//terminal read function calling
+	multipush(R0,R1,R2,R3);
+	R1=4;
+	R2=[SYSTEM_STATUS_TABLE+1];
+	R3=word;
+	call MOD_4;	//device manager
+	multipop(R0,R1,R2,R3);
+	[retv]=0;
+endif;
+//reset mode flag
+[PROCESS_TABLE+([SYSTEM_STATUS_TABLE+1]*16)+9]=0;
+//changing userr stack
+SP=[PROCESS_TABLE+([SYSTEM_STATUS_TABLE+1]*16)+13];
+ireturn;
+	
+	
