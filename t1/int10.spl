@@ -3,8 +3,8 @@ alias c R0;
 alias cpid R1;
 cpid=[SYSTEM_STATUS_TABLE+1];
 c=1;
-while(c<15) do
-	if(cpid<15) then
+while(c<16) do
+	if(cpid<16) then
 		cpid=cpid+1;
 	else
 		cpid=1;
@@ -17,8 +17,22 @@ while(c<15) do
 	endif;
 	c=c+1;
 endwhile;
-if(c==15) then
-	halt;
+if(c==16) then
+	cpid=0;
 else
 	call MOD_5;
 endif;
+alias i R2;
+alias c2 R3;
+c2=0;
+i=0;
+while(i<16) do
+	if([PROCESS_TABLE+i*16+4]==TERMINATED) then
+		c2=c2+1;
+	endif;
+	i=i+1;
+endwhile;
+if(c2==15 && cpid==0) then
+	halt;
+endif;
+
