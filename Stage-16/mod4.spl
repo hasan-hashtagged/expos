@@ -1,37 +1,53 @@
-//DEVICE MANAGER TERMINAL WRITE
-alias funcnum R1;
-alias pid R2;
-if(funcnum==3) then
-	//call terminal aquire
-	multipush(R1,R2,R3);//check R3
-	funcnum=8;
-	call MOD_0;
-	multipop(R1,R2,R3);
-	print R3;
-	multipush(R1,R2,R3);
-	funcnum=9;
-	call MOD_0;
-	multipop(R1,R2,R3);
+alias funcno R1;
+alias currpid R2;
+if (funcno == 3) then	//check if called function is terminal write function 
+
+	//call acquire terminal function
+	multipush (R1,R2,R3,R4); //saving context	
+	R1 = 8;
+	R2 = currpid;
+	call MOD_0; //call resource manager module for acquire terminal function(module 0)
+	multipop (R1,R2,R3,R4);
+
+
+	print R3; //printing the word
+	
+
+	//call release terminal function
+	multipush (R1,R2,R3,R4);
+	R1 = 9;
+	R2 = currpid; 
+	call MOD_0; //call resource manager module for release terminal function(module 0)
+	multipop (R1,R2,R3,R4); 
+
 	return;
+	
 else
-	if(funcnum==4) then
-		//call terminal aquire
-		multipush(R1,R2,R3);
-		R1=8;
-		R2=pid;
-		call MOD_0;
-		multipop(R1,R2,R3);
-		read;
-		[PROCESS_TABLE+pid*16+4]=WAIT_TERMINAL;//check with pid
-		multipush(R1,R2,R3);
-		call MOD_5;
-		multipop(R1,R2,R3);
-		alias word R4;
-		word=([PTBR+2*((R3)/512)]*512)+((R3)%512);
-		[word]=[PROCESS_TABLE+(pid*16)+8]; //read value from input buffer
+	if (funcno == 4) then	//check if called function is terminal read function
+				
+		//call acquire terminal funcition
+		multipush (R1,R2,R3,R4);
+		R1 = 8;   
+		R2 = currpid;
+		call MOD_0; //call resource manager module for acquire terminal function
+		multipop (R1,R2,R3,R4);
+		
+
+		read;	//read from the terminal
+		[PROCESS_TABLE + 16*currpid + 4] = WAIT_TERMINAL;	//set state to wait_terminal
+		
+		multipush (R1,R2,R3,R4);
+		call MOD_5;	//invoking the scheduler	
+		multipop (R1,R2,R3,R4);
+
+		alias word_add R5;
+		word_add =(([PTBR + 2*(R3)/512])*512) + ((R3)%512);
+
+		[word_add] = [PROCESS_TABLE + 16*currpid + 8];	//saving the read value from input buffer
+		
 		return;
 	else
 		return;
 	endif;
-		
 endif;
+return;

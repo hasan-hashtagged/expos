@@ -1,34 +1,38 @@
-alias funcnum R1;
-alias pid R2;
-//acquire
-if(funcnum==8) then
-	while([TERMINAL_STATUS_TABLE]==1) do
-		[PROCESS_TABLE+pid*16+4]=WAIT_TERMINAL;
-		multipush(R1,R2);
-		call MOD_5;
-		multipop(R1,R2);
+alias funcno R1;
+alias currpid R2;
+alias temppid R3;
+temppid = 0;
+
+if (funcno == 8) then  //check if acquire terminal function is called
+	while ([TERMINAL_STATUS_TABLE] == 1) do  //repeat until terminal if acquired
+		[PROCESS_TABLE + 16*currpid + 4] = WAIT_TERMINAL;  //change status of curr process to wait_terminal
+		
+		multipush (R1,R2); 
+		call MOD_5;  //calling schedular module
+		multipop (R1,R2); 
 	endwhile;
-		[TERMINAL_STATUS_TABLE]=1;
-		[TERMINAL_STATUS_TABLE+1]=pid;
-		return;
-endif;
-if(funcnum==9) then
-	if(pid==[TERMINAL_STATUS_TABLE+1]) then
-		[TERMINAL_STATUS_TABLE]=0;
-		alias i R5;
-		i=1;
-		while(i<16) do
-			if([PROCESS_TABLE+i*16+4]==WAIT_TERMINAL) then
-				[PROCESS_TABLE+i*16+4]=READY;
-			endif;
-			i=i+1;
-		endwhile;
-		alias retv R0;
-		retv=0;
-		return;
-	else
-		alias retv R0;
-		retv=-1;
-		return;
+		
+	[TERMINAL_STATUS_TABLE] = 1;  //set terminal state as acquired
+	[TERMINAL_STATUS_TABLE + 1] = currpid;  //set pid field of terminal status table as curr pid
+
+	return;
+else 
+	if (funcno == 9) then  //check if release terminal function is called
+		if (currpid != [TERMINAL_STATUS_TABLE + 1]) then  //check if currpid and pid of acquired process r same
+			R0 = -1; //return -1
+			return;
+		else
+			[TERMINAL_STATUS_TABLE] = 0;  //set terminal state as free
+			
+			while (temppid < 16) do  //update status of all waiting processes as ready
+				if ([PROCESS_TABLE + 16*temppid + 4] == WAIT_TERMINAL) then
+					[PROCESS_TABLE + 16*temppid + 4] = READY;
+				endif;
+					temppid = temppid + 1;
+			endwhile;
+		endif;
 	endif;
+	
+	R0 = 0;
+	return;
 endif;

@@ -1,40 +1,43 @@
-//execption
+//exhandler
 loadi(2,15);
 loadi(3,16);
-//timer
+
+//timer interrupt
 loadi(4,17);
 loadi(5,18);
-//console
+
+//console interrupt
 loadi(8,21);
 loadi(9,22);
-//int 6
+
+//INT6
 loadi(14,27);
 loadi(15,28);
-//int 7
+
+//INT7
 loadi(16,29);
 loadi(17,30);
-//int 10
+
+//INT10
 loadi(22,35);
 loadi(23,36);
-//mod 0
+
+//MOD0
 loadi(40,53);
 loadi(41,54);
-//mod 4
+
+//MOD4
 loadi(48,61);
 loadi(49,62);
-//mod 5
-loadi(50,63);
-loadi(51,64);
+
 //library
 loadi(63,13);
 loadi(64,14);
-//init
+
+//init code
 loadi(65,7);
 loadi(66,8);
-//user_prog
-//loadi(83,69);
-//user prog 2
-//loadi(89,70);
+
 //init pg table
 PTBR=PAGE_TABLE_BASE+20;
 PTLR=10;
@@ -58,27 +61,29 @@ PTLR=10;
 [PTBR+17]="0110";
 [PTBR+18]=77;
 [PTBR+19]="0110";
-[PROCESS_TABLE+16+1]=1;
-[PROCESS_TABLE+16+4]=CREATED;
-[PROCESS_TABLE+16+11]=80;
-[PROCESS_TABLE+16+12]=0;
-[PROCESS_TABLE+16+13]=8*512;
-[PROCESS_TABLE+16+14]=PTBR;
-[PROCESS_TABLE+16+15]=PTLR;
-[76*512]=[65*512+1];
-[PROCESS_TABLE+31+4]=TERMINATED;
-[PROCESS_TABLE+48+4]=TERMINATED;
-[PROCESS_TABLE+64+4]=TERMINATED;
-[PROCESS_TABLE+80+4]=TERMINATED;
-[PROCESS_TABLE+96+4]=TERMINATED;
-[PROCESS_TABLE+112+4]=TERMINATED;
-[PROCESS_TABLE+128+4]=TERMINATED;
-[PROCESS_TABLE+144+4]=TERMINATED;
-[PROCESS_TABLE+160+4]=TERMINATED;
-[PROCESS_TABLE+176+4]=TERMINATED;
-[PROCESS_TABLE+192+4]=TERMINATED;
-[PROCESS_TABLE+208+4]=TERMINATED;
-[PROCESS_TABLE+224+4]=TERMINATED;
-[PROCESS_TABLE+240+4]=TERMINATED;
-[TERMINAL_STATUS_TABLE]=0;
+
+//process table entries for init process
+[PROCESS_TABLE + 16 + 1] = 1;
+[PROCESS_TABLE + 16 + 4] = CREATED;
+[PROCESS_TABLE + 16 + 11] = 80;
+[PROCESS_TABLE + 16 + 12] = 0;
+[PROCESS_TABLE + 16 + 13] = 8*512;
+[PROCESS_TABLE + 16 + 14] = PAGE_TABLE_BASE + 20;
+[PROCESS_TABLE + 16 + 15] = 10;
+
+[76*512] = [65*512 + 1]; //entry point for init process
+
+//all other processes initially terminated
+multipush (R0);
+alias count R0;
+count = 2;
+
+while(count < 16) do
+	[PROCESS_TABLE + count*16 + 4] = TERMINATED;
+	count = count + 1;
+endwhile;
+multipop (R0);
+
+[TERMINAL_STATUS_TABLE] = 0; //setting terminal as free initially
+
 return;
